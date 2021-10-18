@@ -8,4 +8,5 @@ public class getData {
     private dataList[] datalist;
     private String value;
     private String value1;
+    private String value2;
 }
