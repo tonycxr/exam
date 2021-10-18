@@ -7,5 +7,4 @@ import lombok.Data;
 public class getData {
     private dataList[] datalist;
     private String value;
-    private String value3;
 }
