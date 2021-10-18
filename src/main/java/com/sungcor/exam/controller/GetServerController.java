@@ -1,30 +1,26 @@
 package com.sungcor.exam.controller;
 
-import com.alibaba.fastjson.JSONObject;
-import com.sungcor.exam.entity.conditions;
-import com.sungcor.exam.entity.dataList;
-import com.sungcor.exam.utils.utilsforjson;
-import com.sungcor.exam.utils.StringToClass;
-import org.springframework.http.HttpMethod;
+import com.sungcor.exam.service.DownloadInfoToMemory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/getServerData")
 public class GetServerController {
+    @Autowired
+    DownloadInfoToMemory downloadInfoToMemory;
+
+    private static final String theURLToFindServer = "http://192.168.0.28/store/openapi/v2/resources/query?apikey=e10adc3949ba59abbe56e057f2gg88dd";
 
     @ResponseBody
-    @Scheduled(cron = "0 0/30 * * * ?")
-    @RequestMapping(value = "/hello",method = RequestMethod.GET)
-    public String getEquipment(){
-        System.out.println("Hello"+new Date());
-        return "hello";
+    @Scheduled(cron = "1/5 * * * * ?")
+//    @Scheduled(cron = "0 0/30 * * * ?")
+    @PostMapping("post")
+    public void getdataList() throws IOException {
+
     }
 
 }

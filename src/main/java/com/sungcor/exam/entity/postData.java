@@ -5,7 +5,7 @@ import lombok.Data;
 import java.awt.print.Book;
 
 @Data
-public class PostData {
+public class postData {
     private Integer pageSize;
     private Integer pageNum;
     private Boolean needCount;
