@@ -54,9 +54,5 @@ public class Test {
             listForId.add(dataList.getId());
         }
         System.out.println(listForId);
-//        Server server1 = new Server();
-//        server1.setDatalist(dataLists);
-//        server1.setValue("on");
-//        System.out.println(server1);
     }
 }
