@@ -6,22 +6,25 @@ import com.sungcor.exam.entity.dataList;
 import com.sungcor.exam.utils.utilsforjson;
 import com.sungcor.exam.utils.StringToClass;
 import org.springframework.http.HttpMethod;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Controller
 public class GetServerController {
 
-    @GetMapping("http://192.168.0.28/network/v2/openapi/datasets/states/object_available/query?apikey=9cc4871e46094635a19d26557f9bb7f4&object_ids"+""+"&state=&object_type=object.available")
+    @ResponseBody
+    @Scheduled(cron = "0 0/30 * * * ?")
+    @RequestMapping(value = "/hello",method = RequestMethod.GET)
     public String getEquipment(){
-        String str = "";
-        System.out.println(str);
-        return str;
+        System.out.println("Hello"+new Date());
+        return "hello";
     }
 
 }
