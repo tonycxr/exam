@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sungcor.exam.mapping.ServerMapper">
+    <resultMap id="Server" type="com.sungcor.exam.entity.Server">
+        <result column="id" jdbcType="varchar" property="id" />
+        <result column="name" jdbcType="varchar" property="name" />
+        <result column="classCode" jdbcType="varchar" property="classCode" />
+        <result column="ip" jdbcType="varchar" property="ip" />
+        <result column="value" jdbcType="varchar" property="value" />
+    </resultMap>
 
+<!--    <insert id="insertEveryHalfHour" parameterType="com.sungcor.exam.entity.Server">-->
+<!--        insert into device_info (id,name,classcode,ip,value) values (#{id}, #{name},#{classCode}, #{ip},#{value})-->
+<!--    </insert>-->
 </mapper>

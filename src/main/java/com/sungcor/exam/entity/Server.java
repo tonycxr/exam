@@ -8,12 +8,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Server {
-    private dataList datalist;
+    private String id;
+    private String name;
+    private String ip;
+    private String classCode;
     private String value;
     private String url;
 
-    public Server(dataList datalist,String url) {
-        this.datalist = datalist;
+    public Server(String url) {
         this.url = url;
     }
 }

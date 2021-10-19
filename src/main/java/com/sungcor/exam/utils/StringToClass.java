@@ -37,35 +37,33 @@ public class StringToClass {
     }
 
     @Test
-    public void getServer() throws Exception{
+    public List<Server> getServer() throws Exception{
         //post请求
         HttpMethod method = HttpMethod.POST;
         String s = JSONObject.toJSONString(setPostDb());
-        System.out.println(s);
         JSONObject json = JSONObject.parseObject(s);
-        System.out.println("发送数据：" + json.toString());
-//        System.out.println(json);
-//        发送http请求并返回结果
+//        System.out.println("发送数据：" + json.toString());
         String res = HttpRestClient(theURLToFindServer, method, json);
         getData getdata = JsontoInterChanger(res);
-//        System.out.println(getdata);
         dataList[] dataLists = getdata.getDataList();
-//        System.out.println(dataLists);
         List<Server> servers = new ArrayList<>();
         for(dataList datalist:dataLists){
             String url = "http://192.168.0.28/network/v2/openapi/datasets/states/" +
                     "object_available/query?apikey=9cc4871e46094635a19d26557f9bb7f4&object_ids="+datalist.getId()+"&state=&object_type=object.available";
-
-            Server server = new Server(datalist,url);
+            Server server = new Server(url);
+            server.setId(datalist.getId());
+            server.setName(datalist.getName());
+            server.setIp(datalist.getIp());
+            server.setClassCode(datalist.getClassCode());
             servers.add(server);
         }
         for(Server server: servers){
             String res2 = HttpRestClient(server.getUrl(),HttpMethod.GET,json);
-            System.out.println(res2);
+//            System.out.println(res2);
             getData getdata2 = JsontoInterChanger(StringUtils.strip(res2,"[]"));
             server.setValue(getdata2.getValue());
         }
-        System.out.println(servers);
+        return servers;
     }
 
     public static String HttpRestClient(String url, HttpMethod method, JSONObject json) throws IOException {
