@@ -28,7 +28,7 @@ public class StringToClass {
         conditions.setOperator("IN");
         conditions.setValue(list);
         postData postData = new postData();
-        postData.setPageSize(2);
+        postData.setPageSize(200000);
         postData.setNeedCount(true);
         postData.setPageNum(0);
         conditions[] co1 = new conditions[]{conditions};
@@ -61,7 +61,12 @@ public class StringToClass {
             String res2 = HttpRestClient(server.getUrl(),HttpMethod.GET,json);
 //            System.out.println(res2);
             getData getdata2 = JsontoInterChanger(StringUtils.strip(res2,"[]"));
-            server.setValue(getdata2.getValue());
+            if(getdata2!=null){
+                server.setValue(getdata2.getValue());
+            }
+            else{
+                server.setValue("unknown");
+            }
         }
         return servers;
     }

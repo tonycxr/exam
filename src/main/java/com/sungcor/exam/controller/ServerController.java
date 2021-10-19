@@ -16,10 +16,15 @@ public class ServerController {
     private ServerService serverService;
 
 //    @Scheduled(cron = "1/5 * * * * ?")
-    @Scheduled(cron = "0 0/30 * * * ?")
-    @GetMapping("/get")
-    public int insertToDatabase() throws Exception {
+//    @Scheduled(cron = "0 0/30 * * * ?")
+    @GetMapping("/insert")
+    public String insertToDatabase() throws Exception {
         return serverService.insertEntity();
+    }
+
+    @GetMapping("/getAll")
+    public List<Server> serverList(){
+        return serverService.serverList();
     }
 
 }
