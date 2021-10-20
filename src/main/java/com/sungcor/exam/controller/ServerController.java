@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-//@RequestMapping("/insertData")
 public class ServerController {
     @Autowired
     private ServerService serverService;
@@ -23,6 +22,12 @@ public class ServerController {
     @GetMapping("/insert")
     public String insertToDatabase() throws Exception {
         return serverService.insertEntity();
+    }
+
+    @Scheduled(cron = "0 0/30 * * * ?")
+    @GetMapping("/update")
+    public String updateData() throws Exception{
+        return serverService.updateEntity();
     }
 
     @GetMapping("/getAll")

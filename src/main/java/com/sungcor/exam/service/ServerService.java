@@ -24,7 +24,31 @@ public class ServerService {
 //            System.out.println(server);
             serverMapper.insertEntity(server);
         }
-        return "更新成功";
+        return "初始数据插入成功";
+    }
+
+    public String updateEntity() throws Exception{
+        StringToClass stringToClass = new StringToClass();
+        List<Server> serverList1 = stringToClass.getServer();
+        List<Server> serverList2 = serverMapper.serverList();
+//        for(Server server:serverList1){
+//            if(server.getId().equals("5d4a43ac87aa13ea48a938b9")){
+//                server.setValue("off");
+//            }
+//        }
+        for(Server server1:serverList1){
+            for(Server server2:serverList2){
+                if(server1.getId().equals(server2.getId())){
+                    if(server2.getValue().equals("on") && server1.getValue().equals("off")){
+                        server1.setOffLineCount(server2.getOffLineCount()+1);
+                    }else{
+                        server1.setOffLineCount(server2.getOffLineCount());
+                    }
+                }
+            }
+            serverMapper.updateEntity(server1);
+        }
+        return "更新数据成功";
     }
 
     public List<Server> serverList(){

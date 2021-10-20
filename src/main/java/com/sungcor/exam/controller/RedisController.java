@@ -21,7 +21,7 @@ public class RedisController {
 
     @RequestMapping("insert")
 //    @Scheduled(cron = "1/5 * * * * ?")
-//    @Scheduled(cron = "0 0/30 * * * ?")
+    @Scheduled(cron = "0 0/30 * * * ?")
     public boolean setDataRedis() throws Exception {
         StringToClass stringToClass = new StringToClass();
         List<Server> serverList = stringToClass.getServer();
