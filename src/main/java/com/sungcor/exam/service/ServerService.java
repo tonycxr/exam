@@ -24,7 +24,7 @@ public class ServerService {
 //            System.out.println(server);
             serverMapper.insertEntity(server);
         }
-        return "上传成功";
+        return "更新成功";
     }
 
     public List<Server> serverList(){
@@ -60,4 +60,10 @@ public class ServerService {
         String ip2 = "%"+ip+"%";
         return serverMapper.getServerByIp(ip2);
     }
+
+    public String deleteAll(){
+        serverMapper.deleteTheTable();
+        return "删除成功";
+    }
+
 }

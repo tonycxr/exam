@@ -16,6 +16,7 @@ public class Server implements Serializable{
     private String classCode;
     private String value;
     private String url;
+    private int offLineCount;
 
     public Server(String url) {
         this.url = url;
