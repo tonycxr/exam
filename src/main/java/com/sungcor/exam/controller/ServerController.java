@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 //@RequestMapping("/insertData")
@@ -27,4 +28,8 @@ public class ServerController {
         return serverService.serverList();
     }
 
+    @GetMapping("/getOnlineCount")
+    public Map<String,Integer> getOnlineCount(){
+        return serverService.getServerOnline();
+    }
 }

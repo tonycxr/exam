@@ -6,7 +6,10 @@ import com.sungcor.exam.utils.StringToClass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import static com.sungcor.exam.utils.TimeUtil.changeFormat;
 
 @Service
@@ -26,5 +29,25 @@ public class ServerService {
 
     public List<Server> serverList(){
         return serverMapper.serverList();
+    }
+
+    public Map<String, Integer> getServerOnline(){
+        List<Server> serverOnline = serverMapper.getServerOnline();
+        int PCServer = 0;
+        int Switch = 0;
+        for(Server server:serverOnline){
+            switch (server.getClassCode()){
+                case "PCServer":
+                    PCServer +=1;
+                    break;
+                case "Switch":
+                    Switch +=1;
+                    break;
+            }
+        }
+        Map<String, Integer> onLineServers = new HashMap<>();
+        onLineServers.put("PCServer",PCServer);
+        onLineServers.put("Switch",Switch);
+        return onLineServers;
     }
 }
