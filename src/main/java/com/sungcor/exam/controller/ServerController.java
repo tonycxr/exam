@@ -32,4 +32,14 @@ public class ServerController {
     public Map<String,Integer> getOnlineCount(){
         return serverService.getServerOnline();
     }
+
+    @GetMapping("/FuzzyQuery/name/{name}")
+    public List<Server> getServerFuzzyName(@PathVariable String name){
+        return serverService.getServerByName(name);
+    }
+
+    @GetMapping("/FuzzyQuery/ip/{ip}")
+    public List<Server> getServerFuzzyIp(@PathVariable String ip){
+        return serverService.getServerByIp(ip);
+    }
 }

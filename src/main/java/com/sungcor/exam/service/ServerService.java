@@ -50,4 +50,14 @@ public class ServerService {
         onLineServers.put("Switch",Switch);
         return onLineServers;
     }
+
+    public List<Server> getServerByName(String name){
+        String name2 = "%"+name+"%";
+        return serverMapper.getServerByName(name2);
+    }
+
+    public List<Server> getServerByIp(String ip){
+        String ip2 = "%"+ip+"%";
+        return serverMapper.getServerByIp(ip2);
+    }
 }
