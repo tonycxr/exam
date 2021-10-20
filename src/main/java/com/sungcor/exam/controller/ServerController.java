@@ -50,7 +50,7 @@ public class ServerController {
         return serverService.deleteAll();
     }
 
-    @GetMapping("/getOffLine")
+    @GetMapping("/getOffLineCount")
     public Map<String,Integer> getOffLineCount(){
         List<Server> servers = serverService.serverList();
         Map<String,Integer> descByOffLine = new HashMap<>();
