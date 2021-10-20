@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ public class ServerController {
     @Scheduled(cron = "0 0/30 * * * ?")
     @GetMapping("/update")
     public String updateData() throws Exception{
+        System.out.println("更新数据成功"+new Date());
         return serverService.updateEntity();
     }
 

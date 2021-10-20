@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -35,6 +36,7 @@ public class RedisController {
             key = "server:basic.info:{"+server.getId()+"}:List";
             redisUtil.set(key,server);
         }
+        System.out.println("更新Redis数据成功"+new Date());
         return true;
     }
 }
