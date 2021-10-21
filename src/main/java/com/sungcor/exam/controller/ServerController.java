@@ -21,7 +21,9 @@ public class ServerController {
 //    @Scheduled(cron = "1/5 * * * * ?")
 //    @Scheduled(cron = "0 0/30 * * * ?")
     @GetMapping("/insert")
+    @Scheduled(cron = "0 0/30 * * * ?")
     public String insertToDatabase() throws Exception {
+        serverService.updateOffLine();
         return serverService.insertEntity();
     }
 
@@ -37,9 +39,9 @@ public class ServerController {
         return serverService.serverList();
     }
 
-    @GetMapping("/getOnlineCount")
-    public Map<String,Integer> getOnlineCount(){
-        return serverService.getServerOnline();
+    @GetMapping("/getStatus")
+    public Map<String,String> getServerStatus(){
+        return serverService.getServerStatus();
     }
 
     @GetMapping("/FuzzyQuery/name/{name}")
@@ -59,11 +61,7 @@ public class ServerController {
 
     @GetMapping("/getOffLineCount")
     public Map<String,Integer> getOffLineCount(){
-        List<Server> servers = serverService.serverList();
-        Map<String,Integer> descByOffLine = new HashMap<>();
-        for(Server server:servers){
-            descByOffLine.put(server.getId(),server.getOffLineCount());
-        }
-        return MapUtil.sortByValueDescending(descByOffLine);
+        Map<String,Integer> serverMap = serverService.serverListOff();
+        return MapUtil.sortByValueDescending(serverMap);
     }
 }

@@ -1,6 +1,4 @@
 package com.sungcor.exam.controller;
-
-
 import com.sungcor.exam.entity.Server;
 import com.sungcor.exam.redis.RedisUtil;
 import com.sungcor.exam.utils.StringToClass;

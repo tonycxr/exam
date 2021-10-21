@@ -20,59 +20,102 @@ public class ServerService {
     public String insertEntity() throws Exception {
         StringToClass stringToClass = new StringToClass();
         List<Server> serverList = stringToClass.getServer();
+        Date date = new Date();
         for(Server server:serverList){
+            server.setCreate_time(date);
 //            System.out.println(server);
             serverMapper.insertEntity(server);
         }
-        return "初始数据插入成功";
+        return "插入数据成功"+date;
     }
 
     public String updateEntity() throws Exception{
         StringToClass stringToClass = new StringToClass();
-        List<Server> serverList1 = stringToClass.getServer();
-        List<Server> serverList2 = serverMapper.serverList();
-//        for(Server server:serverList1){
-//            if(server.getId().equals("5d4a43ac87aa13ea48a938b9")){
-//                server.setValue("off");
-//            }
-//        }
-        for(Server server1:serverList1){
-            for(Server server2:serverList2){
-                if(server1.getId().equals(server2.getId())){
-                    if(server2.getValue().equals("on") && server1.getValue().equals("off")){
-                        server1.setOffLineCount(server2.getOffLineCount()+1);
-                    }else{
-                        server1.setOffLineCount(server2.getOffLineCount());
-                    }
-                }
-            }
-            serverMapper.updateEntity(server1);
+        List<Server> serverList = stringToClass.getServer();
+        for(Server server:serverList){
+            serverMapper.updateEntity(server);
         }
         return "更新数据成功";
+    }
+
+    public String updateOffLine(){
+        List<Server> servers = serverMapper.serverList();
+        List<Server> serverList = serverMapper.serverListOff();
+        for(Server server:servers){
+            if(server.getValue().equals("off")){
+                Server server2 = new Server(server.getId(),1);
+                for(Server server1:serverList){
+                    if(server1.getId().equals(server2.getId())){
+                        server2.setOffLineCount(server1.getOffLineCount()+1);
+                    }
+                    serverMapper.updateServerOff(server2);
+                    continue;
+                }
+                serverMapper.updateServerOff(server2);
+            }
+        }
+        return "更新离线次数成功";
+    }
+
+    public Map<String,Integer> serverListOff(){
+        List<Server> servers = serverMapper.serverListOff();
+        Map<String,Integer> serverMap = new HashMap<>();
+        for(Server server:servers){
+            serverMap.put(server.getId(),server.getOffLineCount());
+        }
+        return serverMap;
     }
 
     public List<Server> serverList(){
         return serverMapper.serverList();
     }
 
-    public Map<String, Integer> getServerOnline(){
-        List<Server> serverOnline = serverMapper.getServerOnline();
-        int PCServer = 0;
-        int Switch = 0;
-        for(Server server:serverOnline){
+    public Map<String, String> getServerStatus(){
+        List<Server> servers = serverMapper.serverList();
+        int PCServerOnline = 0;
+        int PCServerOffline = 0;
+        int PCServerUnknown = 0;
+        int SwitchOnline = 0;
+        int SwitchOffline = 0;
+        int SwitchUnknown = 0;
+        for(Server server:servers){
             switch (server.getClassCode()){
                 case "PCServer":
-                    PCServer +=1;
-                    break;
+                    switch (server.getValue()){
+                        case "on":
+                            PCServerOnline++;
+                            break;
+                        case "off":
+                            PCServerOffline++;
+                            break;
+                        default:
+                            PCServerUnknown++;
+                            break;
+                    }
+                break;
                 case "Switch":
-                    Switch +=1;
-                    break;
+                    switch (server.getValue()){
+                        case "on":
+                            SwitchOnline++;
+                            break;
+                        case "off":
+                            SwitchOffline++;
+                            break;
+                        default:
+                            SwitchUnknown++;
+                            break;
+                    }
+                break;
             }
         }
-        Map<String, Integer> onLineServers = new HashMap<>();
-        onLineServers.put("PCServer",PCServer);
-        onLineServers.put("Switch",Switch);
-        return onLineServers;
+        Map<String,String> serverStatusMap = new HashMap<>();
+        serverStatusMap.put("PCServer在线情况","在线台数："+PCServerOnline
+                +"，离线台数："+PCServerOffline+"，未知台数："+PCServerUnknown+"，合计："
+                +(PCServerOnline+PCServerUnknown+PCServerOffline));
+        serverStatusMap.put("Switch在线情况","在线台数："+SwitchOnline
+                +"，离线台数："+SwitchOffline+"，未知台数："+SwitchUnknown+"，合计："
+        +(SwitchOnline+SwitchUnknown+SwitchOffline));
+        return serverStatusMap;
     }
 
     public List<Server> getServerByName(String name){

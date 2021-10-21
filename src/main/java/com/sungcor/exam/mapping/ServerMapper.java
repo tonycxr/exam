@@ -10,16 +10,26 @@ import org.apache.ibatis.annotations.Update;
 import java.util.List;
 
 public interface ServerMapper extends BaseMapper<Server> {
-    @Insert("INSERT INTO device_info(id,name,classCode,ip,value,offLineCount)" +
-            " VALUES(#{id},#{name},#{classCode},#{ip},#{value},#{offLineCount})")
+    @Insert("INSERT INTO device_info_history(id,name,classCode,ip,value,create_time)" +
+            " VALUES(#{id},#{name},#{classCode},#{ip},#{value},#{create_time})")
     int insertEntity(Server server);
 
-    @Update("UPDATE device_info SET Name=#{name},classCode=#{classCode},ip=#{ip}," +
-            "value=#{value},offLineCount=#{offLineCount} where id=#{id}")
+    @Insert("REPLACE INTO device_info (id,NAME,ip,classCode,VALUE) VALUES(#{id},#{name},#{ip},#{classCode},#{value})")
     int updateEntity(Server server);
+
+    @Insert("REPLACE INTO device_info_offlinecount (id,offLineCount) VALUES(#{id},#{offLineCount})")
+    int updateServerOff(Server server);
+
+    @Select("SELECT device_info.id,NAME,ip,classCode,VALUE,offLineCount\n" +
+            "FROM device_info,device_info_offlinecount\n" +
+            "WHERE device_info.`id`=device_info_offlinecount.`id`;")
+    List<Server> serverListUnion();
 
     @Select("select * from device_info")
     List<Server> serverList();
+
+    @Select("select * from device_info_offlinecount")
+    List<Server> serverListOff();
 
     @Select("select * from device_info WHERE VALUE = 'on'")
     List<Server> getServerOnline();

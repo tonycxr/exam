@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -17,8 +18,14 @@ public class Server implements Serializable{
     private String value;
     private String url;
     private int offLineCount;
+    private Date create_time;
 
     public Server(String url) {
         this.url = url;
+    }
+
+    public Server(String id,int offLineCount){
+        this.id = id;
+        this.offLineCount = offLineCount;
     }
 }

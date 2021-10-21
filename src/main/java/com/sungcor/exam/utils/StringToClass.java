@@ -55,7 +55,6 @@ public class StringToClass {
             server.setName(datalist.getName());
             server.setIp(datalist.getIp());
             server.setClassCode(datalist.getClassCode());
-            server.setOffLineCount(0);
             servers.add(server);
         }
         for(Server server: servers){
