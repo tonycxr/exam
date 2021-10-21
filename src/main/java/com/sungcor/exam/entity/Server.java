@@ -24,8 +24,9 @@ public class Server implements Serializable{
         this.url = url;
     }
 
-    public Server(String id,int offLineCount){
+    public Server(String id,String classCode,int offLineCount){
         this.id = id;
+        this.classCode=classCode;
         this.offLineCount = offLineCount;
     }
 }

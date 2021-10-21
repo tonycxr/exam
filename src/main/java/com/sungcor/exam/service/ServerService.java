@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.sungcor.exam.utils.TimeUtil.changeFormat;
-
 @Service
 public class ServerService {
     @Autowired(required = false)
@@ -43,7 +41,7 @@ public class ServerService {
         List<Server> serverList = serverMapper.serverListOff();
         for(Server server:servers){
             if(server.getValue().equals("off")){
-                Server server2 = new Server(server.getId(),1);
+                Server server2 = new Server(server.getId(),server.getClassCode(),1);
                 for(Server server1:serverList){
                     if(server1.getId().equals(server2.getId())){
                         server2.setOffLineCount(server1.getOffLineCount()+1);

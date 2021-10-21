@@ -17,7 +17,7 @@ public interface ServerMapper extends BaseMapper<Server> {
     @Insert("REPLACE INTO device_info (id,NAME,ip,classCode,VALUE) VALUES(#{id},#{name},#{ip},#{classCode},#{value})")
     int updateEntity(Server server);
 
-    @Insert("REPLACE INTO device_info_offlinecount (id,offLineCount) VALUES(#{id},#{offLineCount})")
+    @Insert("REPLACE INTO device_info_offlinecount (id,classCode,offLineCount) VALUES(#{id},#{classCode},#{offLineCount})")
     int updateServerOff(Server server);
 
     @Select("SELECT device_info.id,NAME,ip,classCode,VALUE,offLineCount\n" +
