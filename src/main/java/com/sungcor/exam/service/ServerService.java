@@ -3,12 +3,11 @@ package com.sungcor.exam.service;
 import com.sungcor.exam.entity.Server;
 import com.sungcor.exam.mapping.ServerMapper;
 import com.sungcor.exam.utils.StringToClass;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 @Service
 public class ServerService {
@@ -68,7 +67,7 @@ public class ServerService {
         return serverMapper.serverList();
     }
 
-    public Map<String, String> getServerStatus(){
+    public Map<String, Integer> getServerStatus(){
         List<Server> servers = serverMapper.serverList();
         int PCServerOnline = 0;
         int PCServerOffline = 0;
@@ -76,7 +75,9 @@ public class ServerService {
         int SwitchOnline = 0;
         int SwitchOffline = 0;
         int SwitchUnknown = 0;
+        int total = 0;
         for(Server server:servers){
+            total++;
             switch (server.getClassCode()){
                 case "PCServer":
                     switch (server.getValue()){
@@ -106,13 +107,14 @@ public class ServerService {
                 break;
             }
         }
-        Map<String,String> serverStatusMap = new HashMap<>();
-        serverStatusMap.put("PCServer在线情况","在线台数："+PCServerOnline
-                +"，离线台数："+PCServerOffline+"，未知台数："+PCServerUnknown+"，合计："
-                +(PCServerOnline+PCServerUnknown+PCServerOffline));
-        serverStatusMap.put("Switch在线情况","在线台数："+SwitchOnline
-                +"，离线台数："+SwitchOffline+"，未知台数："+SwitchUnknown+"，合计："
-        +(SwitchOnline+SwitchUnknown+SwitchOffline));
+        Map<String,Integer> serverStatusMap = new LinkedHashMap<>();
+        serverStatusMap.put("PCServerOnline",PCServerOnline);
+        serverStatusMap.put("PCServerOffline",PCServerOffline);
+        serverStatusMap.put("PCServerUnknown",PCServerUnknown);
+        serverStatusMap.put("SwitchOnline",SwitchOnline);
+        serverStatusMap.put("SwitchOffline",SwitchOffline);
+        serverStatusMap.put("SwitchUnknown",SwitchUnknown);
+        serverStatusMap.put("total",total);
         return serverStatusMap;
     }
 

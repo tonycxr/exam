@@ -40,7 +40,7 @@ public class ServerController {
     }
 
     @GetMapping("/getStatus")
-    public Map<String,String> getServerStatus(){
+    public Map<String,Integer> getServerStatus(){
         return serverService.getServerStatus();
     }
 
