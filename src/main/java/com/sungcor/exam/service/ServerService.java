@@ -1,14 +1,10 @@
 package com.sungcor.exam.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.sungcor.exam.entity.Datalist;
-import com.sungcor.exam.entity.Getdata;
-import com.sungcor.exam.entity.Postdata;
-import com.sungcor.exam.entity.Server;
+import com.sungcor.exam.entity.*;
 import com.sungcor.exam.mapping.ServerMapper;
 import com.sungcor.exam.utils.HttpUtil;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
@@ -18,8 +14,7 @@ import java.util.*;
 
 @Service
 public class ServerService {
-    @Autowired
-    private ServerMapper serverMapper;
+    private final ServerMapper serverMapper;
 
     @Value("${constants.url.findServer}")
     private String theURLToFindServer;
@@ -27,12 +22,14 @@ public class ServerService {
     @Resource
     private HttpUtil httpUtil;
 
+    public ServerService(ServerMapper serverMapper) {
+        this.serverMapper = serverMapper;
+    }
+
     public String getServer(Postdata postdata){
-        //post请求
         HttpMethod method = HttpMethod.POST;
         String s = JSONObject.toJSONString(postdata);
         JSONObject json = JSONObject.parseObject(s);
-//        System.out.println("发送数据：" + json.toString());
         String res = httpUtil.HttpRestClient(theURLToFindServer, method, json);
         Getdata getdata = httpUtil.JsonToInterChanger(res);
         Datalist[] DataLists = getdata.getDataList();
@@ -49,7 +46,6 @@ public class ServerService {
         }
         for(Server server: servers){
             String res2 = httpUtil.HttpRestClient(server.getUrl(),HttpMethod.GET,json);
-//            System.out.println(res2);
             Getdata getData2 = httpUtil.JsonToInterChanger(StringUtils.strip(res2,"[]"));
             if(getData2!=null){
                 server.setValue(getData2.getValue());
@@ -61,7 +57,6 @@ public class ServerService {
         Date date = new Date();
         for(Server server:servers){
             server.setCreate_time(date);
-//            System.out.println(server);
             serverMapper.insertEntity(server);
             serverMapper.updateEntity(server);
         }
@@ -88,87 +83,37 @@ public class ServerService {
         return target;
     }
 
+    public Map<String,Integer> listMaptoMap(List<Map<String,Integer>> listMap){
+        Map<String,Integer> serverMap = new HashMap<>();
+        for(Map map:listMap){
+            serverMap.put(map.get("id").toString(),(Integer) map.get("offLineCount"));
+        }
+        return serverMap;
+    }
+
     public boolean updateOffLine(){
         List<Server> servers = serverMapper.serverList();
-        List<Server> serverList = serverMapper.serverListOff();
+        List<Map<String,Integer>> listMap = serverMapper.serverMapOff();
+        Map<String,Integer> serverMap = listMaptoMap(listMap);
         for(Server server:servers){
             if(server.getValue().equals("off")){
-                Server server2 = new Server(server.getId(),server.getClassCode(),1);
-                for(Server server1:serverList){
-                    if(server1.getId().equals(server2.getId())){
-                        server2.setOffLineCount(server1.getOffLineCount()+1);
-                    }
-                    serverMapper.updateServerOff(server2);
-                }
-                serverMapper.updateServerOff(server2);
+                serverMap.put(server.getId(),serverMap.getOrDefault(server.getId(),0)+1);
+                server.setOffLineCount(serverMap.get(server.getId()));
+                serverMapper.updateServerOff(server);
             }
         }
         return true;
     }
 
     public Map<String,Integer> serverListOff(){
-        List<Server> servers = serverMapper.serverListOff();
-        Map<String,Integer> serverMap = new HashMap<>();
-        for(Server server:servers){
-            serverMap.put(server.getId(),server.getOffLineCount());
-        }
-        return serverMap;
+        List<Map<String,Integer>> listMap = serverMapper.serverMapOff();
+        return listMaptoMap(listMap);
     }
 
     public List<Server> serverList(){
         return serverMapper.serverList();
     }
 
-//    public Map<String, Integer> getServerStatus(){
-//        List<Server> servers = serverMapper.serverList();
-//        int PCServerOnline = 0;
-//        int PCServerOffline = 0;
-//        int PCServerUnknown = 0;
-//        int SwitchOnline = 0;
-//        int SwitchOffline = 0;
-//        int SwitchUnknown = 0;
-//        int total = 0;
-//        for(Server server:servers){
-//            total++;
-//            switch (server.getClassCode()){
-//                case "PCServer":
-//                    switch (server.getValue()){
-//                        case "on":
-//                            PCServerOnline++;
-//                            break;
-//                        case "off":
-//                            PCServerOffline++;
-//                            break;
-//                        default:
-//                            PCServerUnknown++;
-//                            break;
-//                    }
-//                break;
-//                case "Switch":
-//                    switch (server.getValue()){
-//                        case "on":
-//                            SwitchOnline++;
-//                            break;
-//                        case "off":
-//                            SwitchOffline++;
-//                            break;
-//                        default:
-//                            SwitchUnknown++;
-//                            break;
-//                    }
-//                break;
-//            }
-//        }
-//        Map<String,Integer> serverStatusMap = new LinkedHashMap<>();
-//        serverStatusMap.put("PCServerOnline",PCServerOnline);
-//        serverStatusMap.put("PCServerOffline",PCServerOffline);
-//        serverStatusMap.put("PCServerUnknown",PCServerUnknown);
-//        serverStatusMap.put("SwitchOnline",SwitchOnline);
-//        serverStatusMap.put("SwitchOffline",SwitchOffline);
-//        serverStatusMap.put("SwitchUnknown",SwitchUnknown);
-//        serverStatusMap.put("total",total);
-//        return serverStatusMap;
-//    }
 
     public List<Server> getServerByName(String name){
         String name2 = "%"+name+"%";

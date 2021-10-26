@@ -18,7 +18,7 @@ public interface ServerMapper {
     @Insert("REPLACE INTO device_info (id,NAME,ip,classCode,VALUE) VALUES(#{id},#{name},#{ip},#{classCode},#{value})")
     void updateEntity(Server server);
 
-    @Insert("REPLACE INTO device_info_offlinecount (id,classCode,offLineCount) VALUES(#{id},#{classCode},#{offLineCount})")
+    @Insert("REPLACE INTO device_info_offlinecount (id,offLineCount) VALUES(#{id},#{offLineCount})")
     void updateServerOff(Server server);
 
     @Select("SELECT classcode,\n" +
@@ -40,8 +40,8 @@ public interface ServerMapper {
     @Select("select * from device_info")
     List<Server> serverList();
 
-    @Select("select * from device_info_offlinecount")
-    List<Server> serverListOff();
+    @Select("select id,offLineCount from device_info_offlinecount")
+    List<Map<String,Integer>> serverMapOff();
 
     @Select("select * from device_info where name like #{arg0}")
     List<Server> getServerByName(String name);

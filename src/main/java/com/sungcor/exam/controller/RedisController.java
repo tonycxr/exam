@@ -2,8 +2,6 @@ package com.sungcor.exam.controller;
 import com.sungcor.exam.redis.RedisUtil;
 import com.sungcor.exam.service.ServerService;
 import com.sungcor.exam.utils.Result;
-import com.sungcor.exam.utils.TimeUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,8 +18,11 @@ public class RedisController {
 
     @Resource
     private RedisUtil redisUtil;
-    @Autowired
-    ServerService serverService;
+    private final ServerService serverService;
+
+    public RedisController(ServerService serverService) {
+        this.serverService = serverService;
+    }
 
     @RequestMapping("insert")
 //    @Scheduled(cron = "1/5 * * * * ?")

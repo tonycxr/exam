@@ -1,13 +1,11 @@
 package com.sungcor.exam.controller;
 
 import com.sungcor.exam.entity.Postdata;
-import com.sungcor.exam.entity.Server;
 import com.sungcor.exam.service.ServerService;
 import com.sungcor.exam.utils.MapUtil;
 import com.sungcor.exam.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
@@ -15,24 +13,17 @@ import java.util.Map;
 @RestController
 @Api("Server数据接口")
 public class ServerController {
-    @Autowired
-    private ServerService serverService;
+    private final ServerService serverService;
+
+    public ServerController(ServerService serverService) {
+        this.serverService = serverService;
+    }
 
     @PostMapping("getServer")
-//    @Scheduled(cron = "0 0/30 * * * ?")
     @ApiOperation(value = "接受数据并更新数据库")
     public Result<?> getServerAndSwitch(@RequestBody Postdata postdata){
         return Result.ok(serverService.getServer(postdata));
     }
-
-//    @Scheduled(cron = "1/5 * * * * ?")
-//    @Scheduled(cron = "0 0/30 * * * ?")
-//    @GetMapping("/insert")
-//    @Scheduled(cron = "0 0/30 * * * ?")
-//    @ApiOperation(value = "新增进入历史记录")
-//    public Result<?> insertToDatabase() {
-//        return Result.ok(serverService.insertEntity());
-//    }
 
     @GetMapping("/updateOffLine")
     @Scheduled(fixedDelayString = "${task.data.push.fixed}")
@@ -40,13 +31,6 @@ public class ServerController {
     public Result<?> updateOffLine() {
         return Result.ok(serverService.updateOffLine());
     }
-
-//    @Scheduled(cron = "0 0/30 * * * ?")
-//    @GetMapping("/update")
-//    @ApiOperation(value = "更新最新数据")
-//    public Result<?> updateData(){
-//        return Result.ok(serverService.updateEntity());
-//    }
 
     @GetMapping("/getAll")
     @ApiOperation(value = "获取全部最新设备列表")
