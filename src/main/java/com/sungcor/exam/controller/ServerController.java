@@ -10,9 +10,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -38,7 +35,7 @@ public class ServerController {
 //    }
 
     @GetMapping("/updateOffLine")
-    @Scheduled(cron = "0 0/30 * * * ?")
+    @Scheduled(fixedDelayString = "${task.data.push.fixed}")
     @ApiOperation(value = "更新离线次数")
     public Result<?> updateOffLine() {
         return Result.ok(serverService.updateOffLine());

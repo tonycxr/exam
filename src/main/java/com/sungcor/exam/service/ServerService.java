@@ -9,6 +9,7 @@ import com.sungcor.exam.mapping.ServerMapper;
 import com.sungcor.exam.utils.HttpUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +21,13 @@ public class ServerService {
     @Autowired
     private ServerMapper serverMapper;
 
-    private static final String theURLToFindServer = "http://192.168.0.28/store/openapi/v2/resources/query?apikey=e10adc3949ba59abbe56e057f2gg88dd";
+    @Value("${constants.url.findServer}")
+    private String theURLToFindServer;
 
     @Resource
     private HttpUtil httpUtil;
 
-    public boolean getServer(Postdata postdata){
+    public String getServer(Postdata postdata){
         //post请求
         HttpMethod method = HttpMethod.POST;
         String s = JSONObject.toJSONString(postdata);
@@ -63,7 +65,7 @@ public class ServerService {
             serverMapper.insertEntity(server);
             serverMapper.updateEntity(server);
         }
-        return true;
+        return "插入并更新数据成功";
     }
 
 

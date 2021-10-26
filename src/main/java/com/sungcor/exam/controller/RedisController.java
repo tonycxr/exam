@@ -1,6 +1,7 @@
 package com.sungcor.exam.controller;
 import com.sungcor.exam.redis.RedisUtil;
 import com.sungcor.exam.service.ServerService;
+import com.sungcor.exam.utils.Result;
 import com.sungcor.exam.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,13 +25,13 @@ public class RedisController {
 
     @RequestMapping("insert")
 //    @Scheduled(cron = "1/5 * * * * ?")
-    @Scheduled(cron = "0 0/60 * * * ?")
-    public void set24HourStatus(){
+    @Scheduled(fixedDelayString = "${task.data.push.fixed}")
+    public Result<?> set24HourStatus(){
         Date date = new Date();
         String keys="server:"+changeFormat(date);
         Map<String,Object> serverStatus = serverService.getStatus2();
         redisUtil.set(keys,serverStatus.toString());
         redisUtil.expire(keys,3600);
-        System.out.println("更新Redis数据成功"+date);
+        return Result.ok("更新Redis数据成功"+date);
     }
 }

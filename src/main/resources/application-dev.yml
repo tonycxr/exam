@@ -20,5 +20,14 @@ mybatis:
   mapper-locations: classpath:mapping/*.xml
   type-aliases-package: com.sungcor.exam.entity
 
+constants:
+  url:
+    findServer: http://192.168.0.28/store/openapi/v2/resources/query?apikey=e10adc3949ba59abbe56e057f2gg88dd
+
+task:
+  data:
+    push:
+      fixed: 3600000
+
 
 

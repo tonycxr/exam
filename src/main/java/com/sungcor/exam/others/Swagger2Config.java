@@ -13,7 +13,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 
 @Configuration
-public class Swagger3Config {
+public class Swagger2Config {
     //Swagger 配置
     @Bean
     public Docket createRestApi() {
