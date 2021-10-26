@@ -3,9 +3,9 @@ package com.sungcor.exam.entity;
 import lombok.Data;
 
 @Data
-public class postData {
+public class Postdata {
     private Integer pageSize;
     private Integer pageNum;
     private Boolean needCount;
-    private conditions[] conditions;
+    private Conditions[] conditions;
 }

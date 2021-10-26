@@ -1,38 +1,47 @@
 package com.sungcor.exam.mapping;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.sungcor.exam.entity.Server;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
+import java.util.Map;
 
-public interface ServerMapper extends BaseMapper<Server> {
+@Mapper
+public interface ServerMapper {
     @Insert("INSERT INTO device_info_history(id,name,classCode,ip,value,create_time)" +
             " VALUES(#{id},#{name},#{classCode},#{ip},#{value},#{create_time})")
-    int insertEntity(Server server);
+    void insertEntity(Server server);
 
     @Insert("REPLACE INTO device_info (id,NAME,ip,classCode,VALUE) VALUES(#{id},#{name},#{ip},#{classCode},#{value})")
-    int updateEntity(Server server);
+    void updateEntity(Server server);
 
     @Insert("REPLACE INTO device_info_offlinecount (id,classCode,offLineCount) VALUES(#{id},#{classCode},#{offLineCount})")
-    int updateServerOff(Server server);
+    void updateServerOff(Server server);
 
-    @Select("SELECT device_info.id,NAME,ip,classCode,VALUE,offLineCount\n" +
-            "FROM device_info,device_info_offlinecount\n" +
-            "WHERE device_info.`id`=device_info_offlinecount.`id`;")
-    List<Server> serverListUnion();
+    @Select("SELECT classcode,\n" +
+            "SUM(CASE WHEN VALUE = 'off' AND classCode = 'PCServer' THEN 1 END) AS 'PCoffline',\n" +
+            "SUM(CASE WHEN VALUE = 'on' AND classCode = 'PCServer' THEN 1 END) AS 'PConline',\n" +
+            "SUM(CASE WHEN VALUE = 'unknown' AND classCode = 'PCServer' THEN 1 END) AS 'PCunknown',\n" +
+            "SUM(CASE WHEN classCode = 'PCServer' THEN 1 END) AS 'PCtotal'\n" +
+            "FROM device_info")
+    Map<String,Object> pcServerStatus();
+
+    @Select("SELECT classcode,\n" +
+            "SUM(CASE WHEN VALUE = 'off' AND classCode = 'Switch' THEN 1 END) AS 'Swoffline',\n" +
+            "SUM(CASE WHEN VALUE = 'on' AND classCode = 'Switch' THEN 1 END) AS 'Swonline',\n" +
+            "SUM(CASE WHEN VALUE = 'unknown' AND classCode = 'Switch' THEN 1 END) AS 'Swunknown',\n" +
+            "SUM(CASE WHEN classCode = 'Switch' THEN 1 END) AS 'Swtotal'\n" +
+            "FROM device_info;")
+    Map<String,Object> switchStatus();
 
     @Select("select * from device_info")
     List<Server> serverList();
 
     @Select("select * from device_info_offlinecount")
     List<Server> serverListOff();
-
-    @Select("select * from device_info WHERE VALUE = 'on'")
-    List<Server> getServerOnline();
 
     @Select("select * from device_info where name like #{arg0}")
     List<Server> getServerByName(String name);
@@ -41,6 +50,6 @@ public interface ServerMapper extends BaseMapper<Server> {
     List<Server> getServerByIp(String ip);
 
     @Delete("delete from device_info")
-    int deleteTheTable();
+    void deleteTheTable();
 
 }

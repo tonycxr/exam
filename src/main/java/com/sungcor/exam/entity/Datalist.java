@@ -3,7 +3,7 @@ package com.sungcor.exam.entity;
 import lombok.Data;
 
 @Data
-public class dataList {
+public class Datalist {
     private String id;
     private String name;
     private String ip;
