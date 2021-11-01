@@ -4,10 +4,13 @@ import com.sungcor.exam.entity.Postdata;
 import com.sungcor.exam.service.ServerService;
 import com.sungcor.exam.utils.MapUtil;
 import com.sungcor.exam.utils.Result;
+import com.xxl.job.core.biz.model.ReturnT;
+import com.xxl.job.core.handler.annotation.XxlJob;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Map;
 
 @RestController
@@ -26,10 +29,11 @@ public class ServerController {
     }
 
     @GetMapping("/updateOffLine")
-    @Scheduled(fixedDelayString = "${task.data.push.fixed}")
+//    @Scheduled(fixedDelayString = "${task.data.push.fixed}")
+    @XxlJob("updateOffLine")
     @ApiOperation(value = "更新离线次数")
-    public Result<?> updateOffLine() {
-        return Result.ok(serverService.updateOffLine());
+    public ReturnT<String> updateOffLine(String param) {
+        return new ReturnT(serverService.updateOffLine());
     }
 
     @GetMapping("/getAll")
@@ -38,10 +42,21 @@ public class ServerController {
         return Result.ok(serverService.serverList());
     }
 
+
+    @GetMapping("/helloworld")
+    @XxlJob("MyHello")
+    public ReturnT<String> Hello(String param){
+//        XxlJobLogger.log("myFirstTsk");
+        System.out.println("hello,world");
+        return ReturnT.SUCCESS;
+    }
+
+
     @GetMapping("/getStatus")
+    @XxlJob("getStatus")
     @ApiOperation(value = "获取全部设备在线情况")
-    public Result<?> getServerStatus2(){
-        return Result.ok(serverService.getStatus2());
+    public ReturnT<String> getServerStatus(String param){
+        return new ReturnT(serverService.getStatus());
     }
 
     @GetMapping("/FuzzyQuery/name/{name}")

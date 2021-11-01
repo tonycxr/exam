@@ -64,7 +64,7 @@ public class ServerService {
     }
 
 
-    public Map<String,Object> getStatus2() {
+    public Map<String,Object> getStatus() {
         Map<String,Object> list1=serverMapper.pcServerStatus();
         Map<String,Object> list2=serverMapper.switchStatus();
         Map<String,Object> target=new HashMap<>();
@@ -128,6 +128,24 @@ public class ServerService {
     public String deleteAll(){
         serverMapper.deleteTheTable();
         return "删除成功";
+    }
+
+    public Postdata setPostDb(){
+        Conditions conditions = new Conditions();
+        List<String> list = new ArrayList<>();
+        list.add("PCServer");
+        list.add("Switch");
+        conditions.setField("classCode");
+        conditions.setOperator("IN");
+        conditions.setValue(list);
+        Postdata postData = new Postdata();
+        postData.setPageSize(2);
+        postData.setPageSize(200000);
+        postData.setNeedCount(true);
+        postData.setPageNum(0);
+        Conditions[] co1 = new Conditions[]{conditions};
+        postData.setConditions(co1);
+        return postData;
     }
 
 }

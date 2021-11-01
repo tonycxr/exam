@@ -30,7 +30,7 @@ public class RedisController {
     public Result<?> set24HourStatus(){
         Date date = new Date();
         String keys="server:"+changeFormat(date);
-        Map<String,Object> serverStatus = serverService.getStatus2();
+        Map<String,Object> serverStatus = serverService.getStatus();
         redisUtil.set(keys,serverStatus.toString());
         redisUtil.expire(keys,3600);
         return Result.ok("更新Redis数据成功"+date);
