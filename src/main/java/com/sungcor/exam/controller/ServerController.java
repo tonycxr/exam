@@ -5,6 +5,7 @@ import com.sungcor.exam.service.ServerService;
 import com.sungcor.exam.utils.MapUtil;
 import com.sungcor.exam.utils.Result;
 import com.xxl.job.core.biz.model.ReturnT;
+import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,6 +34,7 @@ public class ServerController {
     @XxlJob("updateOffLine")
     @ApiOperation(value = "更新离线次数")
     public ReturnT<String> updateOffLine(String param) {
+        XxlJobHelper.log("XXL-JOB: 更新离线次数成功.");
         return new ReturnT(serverService.updateOffLine());
     }
 
