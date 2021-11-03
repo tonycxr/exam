@@ -1,4 +1,6 @@
 package com.sungcor.exam.utils;
+import com.sun.org.apache.xml.internal.res.XMLErrorResources_tr;
+
 import java.util.*;
 
 public class MapUtil{
@@ -16,7 +18,15 @@ public class MapUtil{
         }
         return result;
     }
-
-
+//    public static int ranDom(){
+//        return (int) (900000*Math.random()+100000);
+//    }
+//
+//
+//    public static void main(String[] args) {
+//        for(int i=0;i<=20;i++){
+//            System.out.println(ranDom());
+//        }
+//    }
 }
 

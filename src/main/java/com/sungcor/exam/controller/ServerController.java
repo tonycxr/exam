@@ -53,7 +53,6 @@ public class ServerController {
         return ReturnT.SUCCESS;
     }
 
-
     @GetMapping("/getStatus")
     @XxlJob("getStatus")
     @ApiOperation(value = "获取全部设备在线情况")
