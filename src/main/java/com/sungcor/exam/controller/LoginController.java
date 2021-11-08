@@ -1,6 +1,8 @@
 package com.sungcor.exam.controller;
 
 import com.sungcor.exam.entity.User;
+import com.sungcor.exam.service.LoginService;
+import com.sungcor.exam.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -11,12 +13,20 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 
 @RestController
 @Slf4j
 public class LoginController {
+
+    @Resource
+    private final LoginService loginService;
+
+    public LoginController(LoginService loginService) {
+        this.loginService = loginService;
+    }
 
     @GetMapping("/login")
     public String login(User user) {
@@ -47,6 +57,16 @@ public class LoginController {
         return "login success";
     }
 
+    @PostMapping("/add")
+    public Result<?> addUser(@RequestBody User user){
+        return Result.ok(loginService.addUserByAdmin(user));
+    }
+
+    @GetMapping("/delete/{name}")
+    public Result<?> deleteUser(@PathVariable String name){
+        return Result.ok(loginService.deleteUserByName(name));
+    }
+
     @RequiresRoles("admin")
     @GetMapping("/admin")
     public String admin() {
@@ -59,9 +79,9 @@ public class LoginController {
         return "index success!";
     }
 
-    @RequiresPermissions("add")
-    @GetMapping("/add")
-    public String add() {
-        return "add success!";
-    }
+//    @RequiresPermissions("add")
+//    @GetMapping("/add")
+//    public String add() {
+//        return "add success!";
+//    }
 }

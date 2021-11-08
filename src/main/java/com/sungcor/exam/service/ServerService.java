@@ -139,7 +139,7 @@ public class ServerService {
         conditions.setOperator("IN");
         conditions.setValue(list);
         Postdata postData = new Postdata();
-        postData.setPageSize(2);
+//        postData.setPageSize(2);
         postData.setPageSize(200000);
         postData.setNeedCount(true);
         postData.setPageNum(0);
