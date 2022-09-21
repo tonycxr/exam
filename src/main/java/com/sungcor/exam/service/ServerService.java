@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.sungcor.exam.entity.*;
 import com.sungcor.exam.mapping.ServerMapper;
 import com.sungcor.exam.utils.HttpUtil;
+import io.swagger.models.auth.In;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -64,24 +66,24 @@ public class ServerService {
     }
 
 
-    public Map<String,Object> getStatus() {
-        Map<String,Object> list1=serverMapper.pcServerStatus();
-        Map<String,Object> list2=serverMapper.switchStatus();
-        Map<String,Object> target=new HashMap<>();
-        Map<String,Integer> pcServer = new HashMap<>();
-        Map<String,Integer> Switch = new HashMap<>();
-        pcServer.put("online",Integer.parseInt(list1.get("PConline").toString()));
-        pcServer.put("offline",Integer.parseInt(list1.get("PCoffline").toString()));
-        pcServer.put("unknown",Integer.parseInt(list1.get("PCunknown").toString()));
-        pcServer.put("total",Integer.parseInt(list1.get("PCtotal").toString()));
-        target.put("PCServer",pcServer);
-        Switch.put("online",Integer.parseInt(list2.get("Swonline").toString()));
-        Switch.put("offline",Integer.parseInt(list2.get("Swoffline").toString()));
-        Switch.put("unknown",Integer.parseInt(list2.get("Swunknown").toString()));
-        Switch.put("total",Integer.parseInt(list2.get("Swtotal").toString()));
-        target.put("Switch",Switch);
-        return target;
-    }
+//    public Map<String,Object> getStatus() {
+//        Map<String,Object> list1=serverMapper.pcServerStatus();
+//        Map<String,Object> list2=serverMapper.switchStatus();
+//        Map<String,Object> target=new HashMap<>();
+//        Map<String,Integer> pcServer = new HashMap<>();
+//        Map<String,Integer> Switch = new HashMap<>();
+//        pcServer.put("online",Integer.parseInt(list1.get("PConline").toString()));
+//        pcServer.put("offline",Integer.parseInt(list1.get("PCoffline").toString()));
+//        pcServer.put("unknown",Integer.parseInt(list1.get("PCunknown").toString()));
+//        pcServer.put("total",Integer.parseInt(list1.get("PCtotal").toString()));
+//        target.put("PCServer",pcServer);
+//        Switch.put("online",Integer.parseInt(list2.get("Swonline").toString()));
+//        Switch.put("offline",Integer.parseInt(list2.get("Swoffline").toString()));
+//        Switch.put("unknown",Integer.parseInt(list2.get("Swunknown").toString()));
+//        Switch.put("total",Integer.parseInt(list2.get("Swtotal").toString()));
+//        target.put("Switch",Switch);
+//        return target;
+//    }
 
     public Map<String,Integer> listMaptoMap(List<Map<String,Integer>> listMap){
         Map<String,Integer> serverMap = new HashMap<>();
@@ -128,6 +130,37 @@ public class ServerService {
     public String deleteAll(){
         serverMapper.deleteTheTable();
         return "删除成功";
+    }
+
+    public boolean doSecKill(String productId){
+        if(productId==null){
+            return false;
+        }
+        Jedis jedis = new Jedis("192.168.186.135",6389);
+        jedis.auth("redisUSER123!");
+        String kcKey = "sk:"+productId+":qt";
+        String userKey = "sk:"+productId+":user";
+        String kc = jedis.get(kcKey);
+        String kc2 = "";
+        char[] kk = kc.toCharArray();
+        for(Character c:kk){
+            if(c<=100){
+                kc2 += c;
+            }
+        }
+        Integer kcNum = Integer.parseInt(kc2);
+        System.out.println(kcNum);
+        String uid = "cxr";
+        if(kc==null || jedis.sismember(userKey, uid) || kcNum<1){
+            System.out.println("秒杀失败");
+            jedis.close();
+            return false;
+        }
+        jedis.decr(kcKey);
+        jedis.sadd(userKey,uid);
+        System.out.println("秒杀成功");
+        jedis.close();
+        return true;
     }
 
     public Postdata setPostDb(){

@@ -53,12 +53,12 @@ public class ServerController {
         return ReturnT.SUCCESS;
     }
 
-    @GetMapping("/getStatus")
-    @XxlJob("getStatus")
-    @ApiOperation(value = "获取全部设备在线情况")
-    public ReturnT<String> getServerStatus(String param){
-        return new ReturnT(serverService.getStatus());
-    }
+//    @GetMapping("/getStatus")
+//    @XxlJob("getStatus")
+//    @ApiOperation(value = "获取全部设备在线情况")
+//    public ReturnT<String> getServerStatus(String param){
+//        return new ReturnT(serverService.getStatus());
+//    }
 
     @GetMapping("/FuzzyQuery/name/{name}")
     @ApiOperation(value = "根据设备名称模糊查询")
