@@ -4,12 +4,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.sungcor.exam.entity.*;
 import com.sungcor.exam.mapping.ServerMapper;
 import com.sungcor.exam.utils.HttpUtil;
+import com.sungcor.exam.utils.JedisPoolUtil;
 import io.swagger.models.auth.In;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Transaction;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -136,10 +139,14 @@ public class ServerService {
         if(productId==null){
             return false;
         }
-        Jedis jedis = new Jedis("192.168.186.135",6389);
-        jedis.auth("redisUSER123!");
+//        Jedis jedis = new Jedis("192.168.186.135",6389);
+//        jedis.auth("redisUSER123!");
+        JedisPool jedisPoolInstance = JedisPoolUtil.getJedisPoolInstance();
+        Jedis jedis = jedisPoolInstance.getResource();
         String kcKey = "sk:"+productId+":qt";
         String userKey = "sk:"+productId+":user";
+        //监视库存
+        jedis.watch(kcKey);
         String kc = jedis.get(kcKey);
         String kc2 = "";
         char[] kk = kc.toCharArray();
@@ -149,15 +156,30 @@ public class ServerService {
             }
         }
         Integer kcNum = Integer.parseInt(kc2);
-        System.out.println(kcNum);
+//        System.out.println(kcNum);
         String uid = "cxr";
         if(kc==null || jedis.sismember(userKey, uid) || kcNum<1){
             System.out.println("秒杀失败");
             jedis.close();
             return false;
         }
-        jedis.decr(kcKey);
-        jedis.sadd(userKey,uid);
+        //秒杀过程
+        //使用过程
+        Transaction multi = jedis.multi();
+        //组队操作
+        multi.decr(kcKey);
+        multi.sadd(userKey,uid);
+        //执行
+        List<Object> results = multi.exec();
+        //判断是否为空
+        if(results == null || results.size()==0){
+            System.out.println("秒杀失败");
+            jedis.close();
+            return false;
+        }
+
+//        jedis.decr(kcKey);
+//        jedis.sadd(userKey,uid);
         System.out.println("秒杀成功");
         jedis.close();
         return true;
